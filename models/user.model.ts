@@ -1,6 +1,9 @@
 import { Schema, model, Document } from "mongoose";
+import bcrypt from "bcrypt";
 
-export interface IUser extends Document, User {}
+export interface IUser extends Document, User {
+  validatePassword(password: string): boolean;
+}
 
 export interface User {
   name: string;
@@ -28,5 +31,12 @@ const userSchema: Schema = new Schema({
     required: [true, "Password is mandatory"],
   },
 });
+
+userSchema.method(
+  "validatePassword",
+  function (password: string = ""): boolean {
+    return bcrypt.compareSync(password, this.password);
+  }
+);
 
 export const UserModel = model<IUser>("User", userSchema);
