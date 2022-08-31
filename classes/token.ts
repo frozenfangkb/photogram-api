@@ -1,7 +1,10 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 export default class Token {
-  private static seed: string = "this_is_a_public_seed_and_its_FALSE";
+  private static seed: string = process.env.JWT_SEED as string;
   private static validTime: string = "30d";
 
   constructor() {}

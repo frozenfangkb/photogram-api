@@ -1,7 +1,7 @@
 import { Schema, model, Document } from "mongoose";
 import bcrypt from "bcrypt";
 
-export interface IUser extends Document, User {
+export interface UserDB extends Document, User {
   validatePassword(password: string): boolean;
 }
 
@@ -39,4 +39,4 @@ userSchema.method(
   }
 );
 
-export const UserModel = model<IUser>("User", userSchema);
+export const UserModel = model<UserDB>("User", userSchema);

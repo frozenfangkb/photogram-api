@@ -1,14 +1,15 @@
 import { Request, Response, Router } from "express";
-import { IUser, User, UserModel } from "../models/user.model";
+import { UserDB, User, UserModel } from "../models/user.model";
 import bcrypt from "bcrypt";
 import Token from "../classes/token";
+import { verifyToken } from "../middlewares/authenticate";
 
 const userRoutes = Router();
 
 userRoutes.post("/login", (req: Request, res: Response) => {
   const body = req.body;
 
-  UserModel.findOne({ email: body.email }, (err: unknown, us: IUser) => {
+  UserModel.findOne({ email: body.email }, (err: unknown, us: UserDB) => {
     if (err) throw err;
     if (!us) {
       res.json({
@@ -36,6 +37,42 @@ userRoutes.post("/login", (req: Request, res: Response) => {
       });
     }
   });
+});
+
+userRoutes.put("/update", verifyToken, (req: Request, res: Response) => {
+  const newUser = {
+    name: req.body.name,
+    email: req.body.email,
+    avatar: req.body.avatar,
+  };
+
+  UserModel.findByIdAndUpdate(
+    req.user?._id,
+    newUser,
+    { new: true },
+    (err, userDB) => {
+      if (err) throw err;
+
+      if (!userDB) {
+        return res.json({
+          ok: false,
+          error: "User does not exist",
+        });
+      }
+
+      const userToken = Token.getJwtToken({
+        _id: userDB.id,
+        name: userDB.name,
+        email: userDB.email,
+        avatar: userDB.avatar,
+      });
+
+      res.json({
+        ok: true,
+        token: userToken,
+      });
+    }
+  );
 });
 
 userRoutes.post("/create", (req: Request, res: Response) => {
