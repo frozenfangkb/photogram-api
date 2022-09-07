@@ -1,5 +1,6 @@
 import Server from "./classes/server";
 import userRoutes from "./routes/user.routes";
+import postRoutes from "./routes/post.routes";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import bodyParser from "body-parser";
@@ -18,6 +19,7 @@ server.app.use(bodyParser.json());
 server.app.use(cors({ origin: "*" }));
 
 server.app.use("/user", userRoutes);
+server.app.use("/post", postRoutes);
 
 mongoose.connect(
   process.env.MONGO_DB_CONNECTION_STRING as string,
