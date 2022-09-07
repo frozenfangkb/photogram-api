@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { verifyToken } from "../middlewares/authenticate";
-import { Post, PostDB } from "../models/post.model";
+import { Post } from "../models/post.model";
+import { UploadedFile } from "express-fileupload";
 
 const postRoutes = Router();
 
@@ -30,5 +31,25 @@ postRoutes.get("/", async (req: Request, res: Response) => {
 
   res.json({ ok: true, page, posts });
 });
+
+postRoutes.post(
+  "/upload",
+  [verifyToken],
+  async (req: Request, res: Response) => {
+    if (!req.files || !req.files.image) {
+      return res.status(400).json({ ok: false, error: "Bad request" });
+    }
+
+    const file: UploadedFile = req.files.image as UploadedFile;
+
+    if (!file.mimetype.includes("image")) {
+      return res
+        .status(400)
+        .json({ ok: false, error: "Only images are allowed" });
+    }
+
+    res.json({ ok: true, file: file.mimetype });
+  }
+);
 
 export default postRoutes;

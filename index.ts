@@ -4,6 +4,7 @@ import postRoutes from "./routes/post.routes";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import bodyParser from "body-parser";
+import fileUpload from "express-fileupload";
 import cors from "cors";
 
 dotenv.config();
@@ -16,6 +17,7 @@ server.app.use(
   })
 );
 server.app.use(bodyParser.json());
+server.app.use(fileUpload());
 server.app.use(cors({ origin: "*" }));
 
 server.app.use("/user", userRoutes);
