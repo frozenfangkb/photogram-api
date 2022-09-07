@@ -12,7 +12,7 @@ userRoutes.post("/login", (req: Request, res: Response) => {
   UserModel.findOne({ email: body.email }, (err: unknown, us: UserDB) => {
     if (err) throw err;
     if (!us) {
-      res.json({
+      return res.json({
         ok: false,
         error: "User or password are invalid",
       });
