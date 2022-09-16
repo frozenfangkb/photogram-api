@@ -11,6 +11,7 @@ postRoutes.post("/", [verifyToken], async (req: Request, res: Response) => {
   const body = req.body;
 
   body.user = req.user?._id;
+  body.img = fileSystem.moveImagesToPosts(req.user?._id);
 
   const post = await Post.create(body);
 
