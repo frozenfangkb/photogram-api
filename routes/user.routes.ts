@@ -107,4 +107,10 @@ userRoutes.post("/create", (req: Request, res: Response) => {
     });
 });
 
+userRoutes.get("/", [verifyToken], (req: Request, res: Response) => {
+  const user = req.user;
+
+  return res.json({ ok: true, user });
+});
+
 export default userRoutes;
