@@ -61,4 +61,13 @@ postRoutes.post(
   }
 );
 
+postRoutes.get("/image/:userid/:img", (req: Request, res: Response) => {
+  const userId = req.params.userid;
+  const img = req.params.img;
+
+  const photoPath = fileSystem.getPhotoUrl(userId, img);
+
+  return res.sendFile(photoPath);
+});
+
 export default postRoutes;

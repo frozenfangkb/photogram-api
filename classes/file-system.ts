@@ -43,6 +43,16 @@ export default class FileSystem {
     return tempImages;
   }
 
+  public getPhotoUrl(userId: string, img: string): string {
+    const postsPath = path.resolve(__dirname, "../uploads/", userId, "posts");
+
+    if (!fs.existsSync(`${postsPath}/${img}`)) {
+      return path.resolve(__dirname, "../assets/no-image.png");
+    }
+
+    return `${postsPath}/${img}`;
+  }
+
   private getUserTempFolder(userId: string): string {
     const userPath = path.resolve(__dirname, "../uploads/", userId);
     const userTempPath = userPath + "/temp";
