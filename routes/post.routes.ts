@@ -2,8 +2,10 @@ import { Request, Response, Router } from "express";
 import { verifyToken } from "../middlewares/authenticate";
 import { Post } from "../models/post.model";
 import { UploadedFile } from "express-fileupload";
+import FileSystem from "../classes/file-system";
 
 const postRoutes = Router();
+const fileSystem = new FileSystem();
 
 postRoutes.post("/", [verifyToken], async (req: Request, res: Response) => {
   const body = req.body;
@@ -48,7 +50,13 @@ postRoutes.post(
         .json({ ok: false, error: "Only images are allowed" });
     }
 
-    res.json({ ok: true, file: file.mimetype });
+    if (await fileSystem.saveTempImage(file, req.user?._id)) {
+      return res.json({ ok: true, file: file.mimetype });
+    } else {
+      return res
+        .status(500)
+        .json({ ok: false, error: "Internal server error" });
+    }
   }
 );
 
